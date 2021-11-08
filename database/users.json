@@ -1,0 +1,37 @@
+[{
+  "_id": {
+    "$oid": "5fc34db884ce46d77576b24a"
+  },
+  "username": "ram",
+  "password": "ram@001",
+  "firstname": "Sriram",
+  "lastname": "Namilakonda",
+  "email": "sriram.namilakonda1@gmail.com"
+},{
+  "_id": {
+    "$oid": "5fc34db884ce46d77576b24b"
+  },
+  "username": "harsha",
+  "password": "harsha@001",
+  "firstname": "Sriharsha",
+  "lastname": "Namilakonda",
+  "email": "sriharsha.namilakonda@gmail.com"
+},{
+  "_id": {
+    "$oid": "5fc34db884ce46d77576b24c"
+  },
+  "username": "tarun",
+  "password": "tarun@001",
+  "firstname": "Tarun",
+  "lastname": "Bhaskar",
+  "email": "tarun.bhaskar@gmail.com"
+},{
+  "_id": {
+    "$oid": "5fc34db884ce46d77576b24d"
+  },
+  "username": "naksh",
+  "password": "naksh@001",
+  "firstname": "Nakshatra",
+  "lastname": "Pulleti",
+  "email": "nakshatra.pulleti@gmail.com"
+}]
