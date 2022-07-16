@@ -1,0 +1,12 @@
+spring:
+  profiles: prod
+
+mongo:
+  connectionNodes:
+  databaseName: postbuddy
+  postsCollection: posts
+  usersCollection: users
+  commentsCollection: comments
+  connectTimeout: 20000
+  maxPoolSize: 50
+  writeTimeout: 25000

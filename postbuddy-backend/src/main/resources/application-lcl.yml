@@ -1,0 +1,9 @@
+spring:
+  profiles: lcl
+
+mongo:
+  connectionNodes: localhost:27017
+  databaseName: postbuddy
+  postsCollection: posts
+  usersCollection: users
+  commentsCollection: comments
