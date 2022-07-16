@@ -24,7 +24,5 @@ public class User {
     private String firstName;
     @BsonProperty("last_name")
     private String lastName;
-    @BsonProperty("comment_count")
-    private int commentCount=0;
 
 }

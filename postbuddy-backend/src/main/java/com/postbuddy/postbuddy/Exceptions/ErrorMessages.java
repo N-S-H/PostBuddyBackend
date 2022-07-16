@@ -24,4 +24,11 @@ public class ErrorMessages {
 
     public static final String POST_ID_NOT_EXISTS = "The post with the mentioned identifier does not exist";
     public static final String COMMENT_CONTENT_TOO_LONG = "The comment content exceeded maximum character limit %s";
+
+    public static final String USER_NICK_NAME_MISMATCH = "Mismatch between the user nick names occurred in the existing entry and current entry";
+    public static final String COMMENT_ID_NOT_EXISTS = "The comment with the mentioned id does not exist";
+
+    public static final String COMMENT_ID_EMPTY = "The unique identifier of the comment should not be empty";
+
+    public static final String COMMENT_DELETE_PROHIBITED_NICK_NAME = "Only the post author or comment author can delete the comment";
 }

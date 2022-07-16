@@ -43,4 +43,21 @@ public class CommentController {
         }
         return responseEntity;
     }
+
+    @DeleteMapping(path = "/comment", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<GenericResponse> deleteComment(@RequestBody CommentRequest commentRequest) throws MongoException,InvalidCommentException {
+        ResponseEntity<GenericResponse> responseEntity;
+        try {
+            Comment response = commentService.deleteComment(commentRequest);
+            responseEntity = ResponseEntity.status(HttpStatus.OK).body(GenericResponse.builder().totalResults(1).comments(List.of(response)).build());
+            log.info("The comment entry has been successfully deleted from the internal data source for user {}",commentRequest.getUserNickName());
+        } catch(MongoException e) {
+            log.error("Exception occurred while communicating with underlying data source");
+            throw e;
+        } catch (InvalidCommentException e) {
+            log.error("Exception occurred because of invalid comment");
+            throw e;
+        }
+        return responseEntity;
+    }
 }

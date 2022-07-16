@@ -7,7 +7,6 @@ import com.postbuddy.postbuddy.Exceptions.MongoException;
 import com.postbuddy.postbuddy.Repositories.UserRepository;
 import com.postbuddy.postbuddy.Models.Requests.UserRequest;
 import com.postbuddy.postbuddy.Services.UserService;
-import com.postbuddy.postbuddy.Utilities.DbOperationTypes;
 import com.postbuddy.postbuddy.Utilities.PostBuddyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,13 +22,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(UserRequest userRequest) throws InvalidUserException, MongoException {
-        validateUser(userRequest, DbOperationTypes.CREATE);
+        validateUser(userRequest);
         User user = utils.normalizeCreateUserRequest(userRequest);
         userRepository.createUser(user);
         return user;
     }
 
-    private void validateUser(UserRequest user,DbOperationTypes type) throws InvalidUserException, MongoException {
+    private void validateUser(UserRequest user) throws InvalidUserException, MongoException {
         if(user.getNickName()==null || user.getNickName().isEmpty())
             throw new InvalidUserException(ErrorMessages.NO_NICKNAME);
         if(user.getEmail()==null || user.getEmail().isEmpty())

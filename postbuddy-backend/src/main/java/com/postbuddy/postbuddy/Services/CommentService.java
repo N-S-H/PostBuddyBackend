@@ -9,4 +9,6 @@ import org.springframework.stereotype.Component;
 @Component
 public interface CommentService {
     Comment createComment(CommentRequest commentRequest) throws MongoException, InvalidCommentException;
+
+    Comment deleteComment(CommentRequest commentRequest) throws MongoException,InvalidCommentException;
 }

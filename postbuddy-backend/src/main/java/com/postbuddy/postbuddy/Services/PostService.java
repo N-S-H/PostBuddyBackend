@@ -10,4 +10,8 @@ import org.springframework.stereotype.Component;
 public interface PostService {
 
     Post createPost(PostRequest postRequest) throws MongoException, InvalidPostException;
+
+    Post updatePost(PostRequest postRequest) throws MongoException,InvalidPostException;
+
+    Post deletePost(PostRequest postRequest) throws MongoException,InvalidPostException;
 }

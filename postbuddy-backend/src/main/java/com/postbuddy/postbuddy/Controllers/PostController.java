@@ -43,4 +43,38 @@ public class PostController {
         }
         return responseEntity;
     }
+
+    @PutMapping(path="/post",consumes = MediaType.APPLICATION_JSON_VALUE, produces=MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<GenericResponse> updatePost(@RequestBody PostRequest postRequest) throws MongoException,InvalidPostException {
+        ResponseEntity<GenericResponse> responseEntity;
+        try {
+            Post response = postService.updatePost(postRequest);
+            responseEntity = ResponseEntity.status(HttpStatus.OK).body(GenericResponse.builder().totalResults(1).posts(List.of(response)).build());
+            log.info("The post entry has been successfully updated in the internal data source for user {}",postRequest.getUserNickName());
+        } catch (MongoException e) {
+            log.error("Exception occurred while communicating with the underlying data source");
+            throw e;
+        } catch (InvalidPostException e) {
+            log.error("Exception occurred because of invalid post");
+            throw e;
+        }
+        return responseEntity;
+    }
+
+    @DeleteMapping(path="/post",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<GenericResponse> deletePost(@RequestBody PostRequest postRequest) throws MongoException,InvalidPostException {
+        ResponseEntity<GenericResponse> responseEntity;
+        try {
+            Post response = postService.deletePost(postRequest);
+            responseEntity = ResponseEntity.status(HttpStatus.OK).body(GenericResponse.builder().totalResults(1).posts(List.of(response)).build());
+            log.info("The post entry has been successfully deleted from the internal data source for user {}",postRequest.getUserNickName());
+        } catch (MongoException e) {
+            log.error("Exception occurred while communicating with the underlying data source");
+            throw e;
+        } catch (InvalidPostException e) {
+            log.error("Exception occurred because of invalid post");
+            throw e;
+        }
+        return responseEntity;
+    }
 }

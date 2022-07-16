@@ -31,7 +31,7 @@ public class PostBuddyUtils {
         return uuid;
     }
 
-    private String getCurrentDate() {
+    public String getCurrentDate() {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
         LocalDateTime localDateTime = LocalDateTime.now();
         String dateTimeString = dateTimeFormatter.format(localDateTime);
