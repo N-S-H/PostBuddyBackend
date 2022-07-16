@@ -14,7 +14,6 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown=true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserRequest {
-
     private String nickName;
     private String email;
     private String password;

@@ -8,5 +8,5 @@ import org.springframework.stereotype.Component;
 
 @Component
 public interface UserService {
-    public User createUser(UserRequest userRequest) throws InvalidUserException, MongoException;
+    User createUser(UserRequest userRequest) throws InvalidUserException, MongoException;
 }

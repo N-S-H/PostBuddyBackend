@@ -17,8 +17,10 @@ public class Comment {
     @JsonProperty("_id")
     private String id;
     private String comment;
-    @BsonProperty("user_id")
-    private String userId;
+    @BsonProperty("user_nick_name")
+    private String userNickName;
     @BsonProperty("post_id")
     private String postId;
+    @BsonProperty("created_date")
+    private String createdDate;
 }

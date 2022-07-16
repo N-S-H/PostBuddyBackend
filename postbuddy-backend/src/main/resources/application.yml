@@ -5,3 +5,9 @@ spring:
   application:
     name: post-buddy
 
+post:
+  allowedTitleLength: 100
+  allowedDescriptionLength: 1000
+
+comment:
+  allowedContentLength: 500

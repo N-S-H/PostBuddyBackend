@@ -18,32 +18,33 @@ public class UserRepository {
     @Qualifier("usersCollection")
     private MongoCollection<User> usersCollection;
 
-    public boolean findByNickName(String nickName) throws MongoException {
+    public User findByNickName(String nickName) throws MongoException {
         Bson nickNameFilter = Filters.eq("nick_name",nickName);
         try {
             User userDocument = usersCollection.find(nickNameFilter).first();
-            if(userDocument == null) return false;
+            return userDocument;
         } catch (Exception e) {
+            log.error("Exception {} occurred while trying to find the existence of nickname",e.getMessage());
             throw new MongoException();
         }
-        return true;
     }
 
-    public boolean findByEmail(String email) throws MongoException {
+    public User findByEmail(String email) throws MongoException {
         Bson emailFilter = Filters.eq("email",email);
         try {
             User userDocument = usersCollection.find(emailFilter).first();
-            if (userDocument == null) return false;
+            return userDocument;
         } catch (Exception e) {
+            log.error("Exception {} occurred while trying to find the existence of email",e.getMessage());
             throw new MongoException();
         }
-        return true;
     }
 
     public void createUser(User user) throws MongoException {
         try {
             usersCollection.insertOne(user);
         } catch (Exception e) {
+            log.error("Exception {} occurred while trying to create the new user",e.getMessage());
             throw new MongoException();
         }
     }

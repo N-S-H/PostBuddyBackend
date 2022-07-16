@@ -17,14 +17,14 @@ import java.util.List;
 
 @RestController
 @CrossOrigin
-@RequestMapping("postbuddy/user")
+@RequestMapping("postbuddy")
 @Slf4j
 public class UserController {
 
     @Autowired
     UserService userService;
 
-    @PostMapping(path = "/",consumes = MediaType.APPLICATION_JSON_VALUE, produces=MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/user",consumes = MediaType.APPLICATION_JSON_VALUE, produces=MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<GenericResponse> createUser(@RequestBody UserRequest userRequest) throws MongoException, InvalidUserException {
         ResponseEntity<GenericResponse> responseEntity;
         try {

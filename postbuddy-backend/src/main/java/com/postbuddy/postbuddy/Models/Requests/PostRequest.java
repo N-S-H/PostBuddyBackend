@@ -14,7 +14,8 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown=true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PostRequest {
+    private String id;
     private String title;
     private String description;
-    private String userId;
+    private String userNickName;
 }

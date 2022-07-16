@@ -34,14 +34,19 @@ public class MongoConfiguration {
     @Value("${mongo.databaseName}")
     private String databaseName;
 
-    @Value("${mongo.usersCollection}")
-    private String usersCollection;
+    @Value("${dbusername}")
+    private String username;
+
+    @Value("${dbpassword}")
+    private String password;
 
     @Value("${mongo.postsCollection}")
     private String postsCollection;
 
     @Value("${mongo.commentsCollection}")
     private String commentsCollection;
+    @Value("${mongo.usersCollection}")
+    private String usersCollection;
 
     @Value("${spring.application.name}")
     private String applicationName;
@@ -56,7 +61,8 @@ public class MongoConfiguration {
 
     private String getConnectionString() {
         StringBuilder connectionBuilder = new StringBuilder();
-        connectionBuilder.append("mongodb://").append(connectionNodes);
+        connectionBuilder.append("mongodb://").append(username).append(":")
+                .append(password).append("@").append(connectionNodes);
         return connectionBuilder.toString();
     }
 

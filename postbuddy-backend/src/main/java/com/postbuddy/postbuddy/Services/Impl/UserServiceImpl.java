@@ -7,6 +7,7 @@ import com.postbuddy.postbuddy.Exceptions.MongoException;
 import com.postbuddy.postbuddy.Repositories.UserRepository;
 import com.postbuddy.postbuddy.Models.Requests.UserRequest;
 import com.postbuddy.postbuddy.Services.UserService;
+import com.postbuddy.postbuddy.Utilities.DbOperationTypes;
 import com.postbuddy.postbuddy.Utilities.PostBuddyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,13 +23,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(UserRequest userRequest) throws InvalidUserException, MongoException {
-        validateUser(userRequest);
+        validateUser(userRequest, DbOperationTypes.CREATE);
         User user = utils.normalizeCreateUserRequest(userRequest);
         userRepository.createUser(user);
         return user;
     }
 
-    private void validateUser(UserRequest user) throws InvalidUserException, MongoException {
+    private void validateUser(UserRequest user,DbOperationTypes type) throws InvalidUserException, MongoException {
         if(user.getNickName()==null || user.getNickName().isEmpty())
             throw new InvalidUserException(ErrorMessages.NO_NICKNAME);
         if(user.getEmail()==null || user.getEmail().isEmpty())
@@ -37,10 +38,10 @@ public class UserServiceImpl implements UserService {
             throw new InvalidUserException(ErrorMessages.INVALID_PASSWORD);
         if(user.getFirstName()==null || user.getFirstName().isEmpty())
             throw new InvalidUserException(ErrorMessages.NO_FIRSTNAME);
-        boolean existingUserNickName = userRepository.findByNickName(user.getNickName());
-        if(existingUserNickName) throw new InvalidUserException(ErrorMessages.USER_NICKNAME_ALREADY_EXISTS);
-        boolean existingUserEmail = userRepository.findByEmail(user.getEmail());
-        if(existingUserEmail) throw new InvalidUserException(ErrorMessages.USER_EMAIL_ALREADY_EXISTS);
+        User existingUserByNickName = userRepository.findByNickName(user.getNickName());
+        if(existingUserByNickName!=null) throw new InvalidUserException(ErrorMessages.USER_NICKNAME_ALREADY_EXISTS);
+        User existingUserByEmail = userRepository.findByEmail(user.getEmail());
+        if(existingUserByEmail!=null) throw new InvalidUserException(ErrorMessages.USER_EMAIL_ALREADY_EXISTS);
     }
 
 

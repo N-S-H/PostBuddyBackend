@@ -14,7 +14,8 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown=true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CommentRequest {
+    private String id;
     private String comment;
-    private String userId;
+    private String userNickName;
     private String postId;
 }

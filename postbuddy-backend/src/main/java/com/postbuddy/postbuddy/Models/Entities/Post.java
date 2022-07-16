@@ -19,8 +19,12 @@ public class Post {
     private String id;
     private String title;
     private String description;
-    @BsonProperty("user_id")
-    private String userId;
-    @BsonIgnore
+    @BsonProperty("user_nick_name")
+    private String userNickName;
+    @BsonProperty("created_date")
+    private String createdDate;
+    @BsonProperty("last_modified_date")
+    private String lastModifiedDate;
+    @BsonProperty("comment_count")
     private int numOfComments;
 }

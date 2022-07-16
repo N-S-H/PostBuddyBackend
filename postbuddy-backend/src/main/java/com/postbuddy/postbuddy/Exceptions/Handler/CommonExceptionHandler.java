@@ -1,5 +1,7 @@
 package com.postbuddy.postbuddy.Exceptions.Handler;
 
+import com.postbuddy.postbuddy.Exceptions.InvalidCommentException;
+import com.postbuddy.postbuddy.Exceptions.InvalidPostException;
 import com.postbuddy.postbuddy.Exceptions.InvalidUserException;
 import com.postbuddy.postbuddy.Exceptions.MongoException;
 import com.postbuddy.postbuddy.Models.Responses.GenericResponse;
@@ -20,6 +22,22 @@ public class CommonExceptionHandler {
     @ExceptionHandler
     public ResponseEntity<GenericResponse> invalidUserException(InvalidUserException e) {
         log.debug("Invalid user exception occurred  because of the reason: "+e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(GenericResponse.builder().hasErrors(true).errorMessages(List.of(e.getMessage())).build());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler
+    public ResponseEntity<GenericResponse> invalidPostException(InvalidPostException e) {
+        log.debug("Invalid post exception occurred  because of the reason: "+e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(GenericResponse.builder().hasErrors(true).errorMessages(List.of(e.getMessage())).build());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler
+    public ResponseEntity<GenericResponse> invalidCommentException(InvalidCommentException e) {
+        log.debug("Invalid comment exception occurred  because of the reason: "+e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(GenericResponse.builder().hasErrors(true).errorMessages(List.of(e.getMessage())).build());
     }
