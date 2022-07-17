@@ -1,16 +1,22 @@
 package com.postbuddy.postbuddy.Repositories;
 
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.*;
 import com.mongodb.client.result.UpdateResult;
 import com.postbuddy.postbuddy.Exceptions.MongoException;
 import com.postbuddy.postbuddy.Models.Entities.Post;
 import com.postbuddy.postbuddy.Models.Requests.PostRequest;
+import com.postbuddy.postbuddy.Models.Responses.GenericResponse;
+import com.postbuddy.postbuddy.Utilities.PostBuddyConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.conversions.Bson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -85,6 +91,87 @@ public class PostRepository {
             postsCollection.updateOne(idFilter,decrementUpdate);
         } catch (Exception e) {
             log.error("Exception {} occurred while decrementing the comment count",e.getMessage());
+            throw new MongoException();
+        }
+    }
+
+    public GenericResponse fetchLatestPosts(String nickName, int offset) throws MongoException {
+        log.info("About to fetch the latest posts");
+        Bson sort = Sorts.descending("created_date");
+        List<Bson> bsonList = new ArrayList<>();
+        Bson user=null;
+        if(!nickName.isEmpty()) {
+            user = Filters.eq("user_nick_name",nickName);
+        }else {
+            user = Filters.exists("user_nick_name");
+        }
+        bsonList.add(user);
+        Bson finalBson = Filters.and(bsonList);
+        try {
+            long totalResults = postsCollection.countDocuments(finalBson);
+            MongoCursor<Post> postsCursor = postsCollection.find(finalBson).sort(sort).skip(offset).limit(PostBuddyConstants.DEFAULT_LIMIT).iterator();
+            List<Post> postList = new ArrayList<>();
+            while(postsCursor.hasNext()) postList.add(postsCursor.next());
+            GenericResponse genericResponse = GenericResponse.builder()
+                    .totalResults((int)totalResults).posts(postList).limit(PostBuddyConstants.DEFAULT_LIMIT)
+                    .offset(offset).build();
+            return genericResponse;
+        } catch (Exception e) {
+            log.error("Exception {} occurred while fetching the latest posts",e.getMessage());
+            throw new MongoException();
+        }
+    }
+
+    public GenericResponse fetchOldestPosts(String nickName, int offset) throws MongoException {
+        log.info("About to fetch the oldest posts");
+        Bson sort = Sorts.ascending("created_date");
+        List<Bson> bsonList = new ArrayList<>();
+        Bson user=null;
+        if(!nickName.isEmpty()) {
+            user = Filters.eq("user_nick_name",nickName);
+        }else {
+            user = Filters.exists("user_nick_name");
+        }
+        bsonList.add(user);
+        Bson finalBson = Filters.and(bsonList);
+        try {
+            long totalResults = postsCollection.countDocuments(finalBson);
+            MongoCursor<Post> postsCursor = postsCollection.find(finalBson).sort(sort).skip(offset).limit(PostBuddyConstants.DEFAULT_LIMIT).iterator();
+            List<Post> postList = new ArrayList<>();
+            while(postsCursor.hasNext()) postList.add(postsCursor.next());
+            GenericResponse genericResponse = GenericResponse.builder()
+                    .totalResults((int)totalResults).posts(postList).limit(PostBuddyConstants.DEFAULT_LIMIT)
+                    .offset(offset).build();
+            return genericResponse;
+        } catch (Exception e) {
+            log.error("Exception {} occurred while fetching the older posts",e.getMessage());
+            throw new MongoException();
+        }
+    }
+
+    public GenericResponse fetchPostsWithHighestComments(String nickName, int offset) throws MongoException {
+        log.info("About to fetch the posts with highest comments");
+        Bson sort = Sorts.descending("comment_count");
+        Bson user = null;
+        if(!nickName.isEmpty()) {
+            user = Filters.eq("user_nick_name",nickName);
+        } else {
+            user = Filters.exists("user_nick_name");
+        }
+        List<Bson> bsonList = new ArrayList<>();
+        bsonList.add(user);
+        Bson finalBson = Filters.and(bsonList);
+        try {
+            long totalResults = postsCollection.countDocuments(finalBson);
+            MongoCursor<Post> postsCursor = postsCollection.find(finalBson).sort(sort).skip(offset).limit(PostBuddyConstants.DEFAULT_LIMIT).iterator();
+            List<Post> postList = new ArrayList<>();
+            while(postsCursor.hasNext()) postList.add(postsCursor.next());
+            GenericResponse genericResponse = GenericResponse.builder()
+                    .totalResults((int)totalResults).posts(postList).limit(PostBuddyConstants.DEFAULT_LIMIT)
+                    .offset(offset).build();
+            return genericResponse;
+        } catch (Exception e) {
+            log.error("Exception {} occurred while fetching the posts with highest comments",e.getMessage());
             throw new MongoException();
         }
     }

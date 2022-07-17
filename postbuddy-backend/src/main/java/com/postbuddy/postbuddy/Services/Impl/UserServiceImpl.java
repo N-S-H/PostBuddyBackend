@@ -28,6 +28,30 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
+    @Override
+    public User getUser(UserRequest userRequest) throws MongoException, InvalidUserException {
+        User user = validateUserRetrieval(userRequest);
+        return user;
+    }
+
+    private User validateUserRetrieval(UserRequest userRequest) throws InvalidUserException, MongoException {
+        if((userRequest.getNickName()==null || userRequest.getNickName().isEmpty())
+           && (userRequest.getEmail()==null) || userRequest.getEmail().isEmpty())
+            throw new InvalidUserException(ErrorMessages.NO_EMAIL_OR_NICK_NAME);
+
+        if(!userRequest.getNickName().isEmpty()) {
+            User existingUserByNickName = userRepository.findByNickName(userRequest.getNickName());
+            if(existingUserByNickName==null) throw new InvalidUserException(ErrorMessages.USER_NICKNAME_DOES_NOT_EXISTS);
+            return existingUserByNickName;
+        }
+        else {
+            User existingUserByEmail = userRepository.findByEmail(userRequest.getEmail());
+            if(existingUserByEmail==null) throw new InvalidUserException(ErrorMessages.USER_EMAIL_DOES_NOT_EXIST);
+            return existingUserByEmail;
+        }
+
+    }
+
     private void validateUser(UserRequest user) throws InvalidUserException, MongoException {
         if(user.getNickName()==null || user.getNickName().isEmpty())
             throw new InvalidUserException(ErrorMessages.NO_NICKNAME);

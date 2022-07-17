@@ -41,4 +41,20 @@ public class UserController {
         return responseEntity;
     }
 
+    @GetMapping(path="/user",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<GenericResponse> getUser(@RequestBody UserRequest userRequest) throws MongoException, InvalidUserException {
+        ResponseEntity<GenericResponse> responseEntity;
+        try {
+            User response = userService.getUser(userRequest);
+            responseEntity = ResponseEntity.status(HttpStatus.OK).body(GenericResponse.builder().totalResults(1).users(List.of(response)).build());
+        } catch(MongoException e) {
+            log.error("Exception occurred while communicating with underlying data source");
+            throw e;
+        } catch (InvalidUserException e) {
+            log.error("Exception occurred because of invalid user");
+            throw e;
+        }
+        return responseEntity;
+    }
+
 }

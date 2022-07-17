@@ -1,11 +1,10 @@
 package com.postbuddy.postbuddy.Services.Impl;
 
-import com.postbuddy.postbuddy.Exceptions.ErrorMessages;
-import com.postbuddy.postbuddy.Exceptions.InvalidPostException;
-import com.postbuddy.postbuddy.Exceptions.MongoException;
+import com.postbuddy.postbuddy.Exceptions.*;
 import com.postbuddy.postbuddy.Models.Entities.Post;
 import com.postbuddy.postbuddy.Models.Entities.User;
 import com.postbuddy.postbuddy.Models.Requests.PostRequest;
+import com.postbuddy.postbuddy.Models.Responses.GenericResponse;
 import com.postbuddy.postbuddy.Repositories.CommentRepository;
 import com.postbuddy.postbuddy.Repositories.PostRepository;
 import com.postbuddy.postbuddy.Repositories.UserRepository;
@@ -14,6 +13,7 @@ import com.postbuddy.postbuddy.Utilities.PostBuddyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import static com.postbuddy.postbuddy.Utilities.PostBuddyConstants.*;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -62,6 +62,47 @@ public class PostServiceImpl implements PostService {
         commentRepository.deleteCommentsFromPostId(postRequest.getId());
         Post deletedPost = postRepository.deletePost(postRequest);
         return deletedPost;
+    }
+
+    @Override
+    public GenericResponse getPosts(String nickName, String sortFilter, String offset) throws MongoException, InvalidPostException, InvalidPostFetchRequestException {
+        if(nickName!=null && !nickName.isEmpty()) {
+            validateUserExistence(nickName);
+        }
+        validateSortFilter(sortFilter);
+        int offsetValue = validatePostFetchOffset(offset);
+        GenericResponse genericResponse = fetchPostsBasedOnFilters(nickName,sortFilter,offsetValue);
+        return genericResponse;
+    }
+
+    private GenericResponse fetchPostsBasedOnFilters(String nickName, String sortFilter, int offset) throws MongoException {
+        GenericResponse genericResponse=null;
+        switch(sortFilter) {
+            case NEWEST:
+                genericResponse = postRepository.fetchLatestPosts(nickName,offset);
+                break;
+            case OLDEST:
+                genericResponse = postRepository.fetchOldestPosts(nickName,offset);
+                break;
+            case HIGHEST_COMMENTS:
+                genericResponse = postRepository.fetchPostsWithHighestComments(nickName,offset);
+                break;
+        }
+        return genericResponse;
+    }
+
+    private int validatePostFetchOffset(String offsetString) throws InvalidPostFetchRequestException {
+        try {
+            Integer offset = Integer.parseInt(offsetString);
+            return offset.intValue();
+        } catch (NumberFormatException e) {
+            throw new InvalidPostFetchRequestException(ErrorMessages.INVALID_OFFSET_VALUE);
+        }
+    }
+
+    private void validateSortFilter(String sortFilter) throws InvalidPostFetchRequestException {
+        if(!sortFilter.equals(NEWEST) && !sortFilter.equals(OLDEST) && !sortFilter.equals(HIGHEST_COMMENTS))
+        throw new InvalidPostFetchRequestException(ErrorMessages.INVALID_SORT_FILTER);
     }
 
     private void validatePostExistenceAndMatchUserInfo(PostRequest postRequest) throws MongoException, InvalidPostException {

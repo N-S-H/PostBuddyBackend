@@ -31,4 +31,12 @@ public class ErrorMessages {
     public static final String COMMENT_ID_EMPTY = "The unique identifier of the comment should not be empty";
 
     public static final String COMMENT_DELETE_PROHIBITED_NICK_NAME = "Only the post author or comment author can delete the comment";
+
+    public static final String NO_EMAIL_OR_NICK_NAME = "Neither email nor nickname is specified in the request";
+
+    public static final String USER_EMAIL_DOES_NOT_EXIST = "The user does not exist with the given email";
+
+    public static final String INVALID_OFFSET_VALUE = "The offset value specified in the request is invalid";
+
+    public static final String INVALID_SORT_FILTER = "The sort filter passed to fetch the posts is invalid";
 }

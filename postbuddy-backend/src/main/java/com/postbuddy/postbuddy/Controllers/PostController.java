@@ -1,6 +1,7 @@
 package com.postbuddy.postbuddy.Controllers;
 
 import com.postbuddy.postbuddy.Exceptions.InvalidPostException;
+import com.postbuddy.postbuddy.Exceptions.InvalidPostFetchRequestException;
 import com.postbuddy.postbuddy.Exceptions.InvalidUserException;
 import com.postbuddy.postbuddy.Exceptions.MongoException;
 import com.postbuddy.postbuddy.Models.Entities.Post;
@@ -9,6 +10,7 @@ import com.postbuddy.postbuddy.Models.Requests.PostRequest;
 import com.postbuddy.postbuddy.Models.Requests.UserRequest;
 import com.postbuddy.postbuddy.Models.Responses.GenericResponse;
 import com.postbuddy.postbuddy.Services.PostService;
+import com.postbuddy.postbuddy.Utilities.PostBuddyConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -76,5 +78,26 @@ public class PostController {
             throw e;
         }
         return responseEntity;
+    }
+
+    @GetMapping(path="/post", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<GenericResponse> getPosts(@RequestParam(name = "userNickName",required = false,defaultValue = "") String nickName,
+                                                    @RequestParam(name = "sortBy", required = false, defaultValue = PostBuddyConstants.NEWEST) String sortFilter,
+                                                    @RequestParam(name = "offset",required=false,defaultValue = "0") String offset) throws MongoException, InvalidPostException, InvalidPostFetchRequestException {
+        try {
+            GenericResponse genericResponse = postService.getPosts(nickName,sortFilter,offset);
+            ResponseEntity<GenericResponse> responseEntity = ResponseEntity.status(HttpStatus.OK).body(genericResponse);
+            log.info("The posts have been successfully fetched based on given filters");
+            return responseEntity;
+        } catch (MongoException e) {
+            log.error("Exception occurred while communicating with the underlying data source");
+            throw e;
+        } catch (InvalidPostException e) {
+            log.error("Exception occurred because of invalid post");
+            throw e;
+        } catch (InvalidPostFetchRequestException e) {
+            log.error("Exception occurred because of invalid pos request");
+            throw e;
+        }
     }
 }

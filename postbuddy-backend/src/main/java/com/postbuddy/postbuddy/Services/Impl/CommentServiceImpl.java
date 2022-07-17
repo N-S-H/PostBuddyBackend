@@ -2,11 +2,13 @@ package com.postbuddy.postbuddy.Services.Impl;
 
 import com.postbuddy.postbuddy.Exceptions.ErrorMessages;
 import com.postbuddy.postbuddy.Exceptions.InvalidCommentException;
+import com.postbuddy.postbuddy.Exceptions.InvalidCommentFetchRequestException;
 import com.postbuddy.postbuddy.Exceptions.MongoException;
 import com.postbuddy.postbuddy.Models.Entities.Comment;
 import com.postbuddy.postbuddy.Models.Entities.Post;
 import com.postbuddy.postbuddy.Models.Entities.User;
 import com.postbuddy.postbuddy.Models.Requests.CommentRequest;
+import com.postbuddy.postbuddy.Models.Responses.GenericResponse;
 import com.postbuddy.postbuddy.Repositories.CommentRepository;
 import com.postbuddy.postbuddy.Repositories.PostRepository;
 import com.postbuddy.postbuddy.Repositories.UserRepository;
@@ -53,6 +55,23 @@ public class CommentServiceImpl implements CommentService {
         postRepository.decrementCommentCount(commentRequest.getPostId());
         Comment deletedComment = commentRepository.deleteComment(commentRequest);
         return deletedComment;
+    }
+
+    @Override
+    public GenericResponse getCommentsForPost(String postId, String offset) throws MongoException, InvalidCommentException, InvalidCommentFetchRequestException {
+        Post existingPost = validatePostExistence(postId);
+        int offsetValue = validateCommentsFetchOffset(offset);
+        GenericResponse genericResponse = commentRepository.getCommentsForPost(existingPost, offsetValue);
+        return genericResponse;
+    }
+
+    private int validateCommentsFetchOffset(String offsetString) throws InvalidCommentFetchRequestException {
+        try {
+            Integer offset = Integer.parseInt(offsetString);
+            return offset.intValue();
+        } catch (NumberFormatException e) {
+           throw new InvalidCommentFetchRequestException(ErrorMessages.INVALID_OFFSET_VALUE);
+        }
     }
 
     private void validateCommentExistenceAndMatchUserInfo(CommentRequest commentRequest,Post existingPost) throws InvalidCommentException, MongoException {

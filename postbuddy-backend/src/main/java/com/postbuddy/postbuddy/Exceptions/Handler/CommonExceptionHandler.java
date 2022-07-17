@@ -1,9 +1,6 @@
 package com.postbuddy.postbuddy.Exceptions.Handler;
 
-import com.postbuddy.postbuddy.Exceptions.InvalidCommentException;
-import com.postbuddy.postbuddy.Exceptions.InvalidPostException;
-import com.postbuddy.postbuddy.Exceptions.InvalidUserException;
-import com.postbuddy.postbuddy.Exceptions.MongoException;
+import com.postbuddy.postbuddy.Exceptions.*;
 import com.postbuddy.postbuddy.Models.Responses.GenericResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -38,6 +35,22 @@ public class CommonExceptionHandler {
     @ExceptionHandler
     public ResponseEntity<GenericResponse> invalidCommentException(InvalidCommentException e) {
         log.debug("Invalid comment exception occurred  because of the reason: "+e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(GenericResponse.builder().hasErrors(true).errorMessages(List.of(e.getMessage())).build());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler
+    public ResponseEntity<GenericResponse> invalidCommentFetchRequestException(InvalidCommentFetchRequestException e) {
+        log.debug("Invalid comment fetch request exception occurred  because of the reason: "+e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(GenericResponse.builder().hasErrors(true).errorMessages(List.of(e.getMessage())).build());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler
+    public ResponseEntity<GenericResponse> invalidPostFetchRequestException(InvalidPostFetchRequestException e) {
+        log.debug("Invalid post fetch request exception occurred  because of the reason: "+e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(GenericResponse.builder().hasErrors(true).errorMessages(List.of(e.getMessage())).build());
     }

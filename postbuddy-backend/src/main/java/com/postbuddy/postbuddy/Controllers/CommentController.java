@@ -1,6 +1,7 @@
 package com.postbuddy.postbuddy.Controllers;
 
 import com.postbuddy.postbuddy.Exceptions.InvalidCommentException;
+import com.postbuddy.postbuddy.Exceptions.InvalidCommentFetchRequestException;
 import com.postbuddy.postbuddy.Exceptions.InvalidPostException;
 import com.postbuddy.postbuddy.Exceptions.MongoException;
 import com.postbuddy.postbuddy.Models.Entities.Comment;
@@ -59,5 +60,24 @@ public class CommentController {
             throw e;
         }
         return responseEntity;
+    }
+
+    @GetMapping(path="/comment/{postId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<GenericResponse> getComments(@PathVariable("postId") String postId,@RequestParam(name = "offset",required = false,defaultValue = "0") String offset) throws InvalidCommentException, MongoException, InvalidCommentFetchRequestException {
+        try {
+            GenericResponse genericResponse = commentService.getCommentsForPost(postId,offset);
+            ResponseEntity<GenericResponse> responseEntity = ResponseEntity.status(HttpStatus.OK).body(genericResponse);
+            log.info("The comments has been successfully fetched for the post with id {}",postId);
+            return responseEntity;
+        } catch (MongoException e) {
+            log.error("Exception occurred while communicating with underlying data source");
+            throw e;
+        } catch (InvalidCommentException e) {
+            log.error("Exception occurred because of invalid comment");
+            throw e;
+        } catch (InvalidCommentFetchRequestException e) {
+            log.error("The comment fetch request is invalid");
+            throw e;
+        }
     }
 }
